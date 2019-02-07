@@ -91,7 +91,7 @@ class HTTPClient(object):
                 buffer.extend(part)
             else:
                 done = not part
-        return buffer.decode('"ISO-8859-1')
+        return buffer.decode('utf-8')
 
     def GET(self, url, args=None):
         #print("came into get")
