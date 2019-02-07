@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # Copyright 2013 Abram Hindle
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ httpclass = httpclient
 
 # Sorry but in Python this comes out of the box!
 class MyHTTPHandler(http.server.BaseHTTPRequestHandler):
-    post = None 
+    post = None
     get = None
     def do_POST(self):
         try:
@@ -48,13 +48,13 @@ class MyHTTPHandler(http.server.BaseHTTPRequestHandler):
             print("Exception %s\n" % e)
             raise e
 
-    def do_GET(self):
-        try:
-            print("GET %s\n" % self.path)
+def do_GET(self):
+    try:
+        print("GET %s\n" % self.path)
             if (self.get == None):
                 return None
-            else:
-                return self.get()
+        else:
+            return self.get()
         except Exception as e:
             print("Exception %s\n" % e)
             raise e
@@ -126,7 +126,7 @@ def post_header_check(self):
 class TestHTTPClient(unittest.TestCase):
     httpd = None
     running = False
-
+    
     @classmethod
     def setUpClass(self):
         '''Cache the httpd server and run it as a thread'''
@@ -139,10 +139,10 @@ class TestHTTPClient(unittest.TestCase):
                 print("setUP: Thread died")
                 raise(e)
 
-    @classmethod
+@classmethod
     def run_server(self):
         '''run the httpd server in a thread'''
-        try:    
+        try:
             socketserver.TCPServer.allow_reuse_address = True
             http.server.HTTPServer.allow_reuse_address = True
             TestHTTPClient.httpd = make_http_server()
@@ -155,8 +155,8 @@ class TestHTTPClient(unittest.TestCase):
 
 
 
-    def test404GET(self):
-        '''Test against 404 errors'''
+def test404GET(self):
+    '''Test against 404 errors'''
         MyHTTPHandler.get = nothing_available
         http = httpclass.HTTPClient()
         req = http.GET("http://%s:%d/49872398432" % (BASEHOST,BASEPORT) )
@@ -171,8 +171,8 @@ class TestHTTPClient(unittest.TestCase):
         self.assertTrue(req != None, "None Returned!")
         self.assertTrue(req.code == 404)
 
-    def testGET(self):
-        '''Test HTTP GET'''
+def testGET(self):
+    '''Test HTTP GET'''
         MyHTTPHandler.get = echo_path_get
         http = httpclass.HTTPClient()
         path = "abcdef/gjkd/dsadas"
@@ -193,8 +193,8 @@ class TestHTTPClient(unittest.TestCase):
         self.assertTrue(req != None, "None Returned!")
         self.assertTrue(req.code == 200)
 
-    def testPOSTHeaders(self):
-        '''Test HTTP POST Headers'''
+def testPOSTHeaders(self):
+    '''Test HTTP POST Headers'''
         MyHTTPHandler.post = post_header_check
         MyHTTPHandler.get  = die_on_method
         http = httpclass.HTTPClient()
@@ -204,44 +204,44 @@ class TestHTTPClient(unittest.TestCase):
         self.assertTrue(req != None, "None Returned!")
         self.assertTrue(req.code == 200,"Code is %s but I wanted a 200 OK" % req.code)
 
-        
-        
+
+
     # consider disabling this test until everything else works
     def testInternetGets(self):
         '''Test HTTP Get in the wild, these webservers are far less
-           forgiving'''
+            forgiving'''
         MyHTTPHandler.get = echo_path_get
-        http = httpclass.HTTPClient()        
+        http = httpclass.HTTPClient()
         urls = [
-            "http://www.cs.ualberta.ca/",
-            "http://softwareprocess.es/static/SoftwareProcess.es.html",
-            "http://c2.com/cgi/wiki?CommonLispHyperSpec",
-            "http://slashdot.org"
-            ]
-        for url in urls:
-            try:
-                req = http.GET( url )
-            except Exception as e:
-                print("An Exception was thrown for %s" % url)
-                self.assertTrue( False, "An Exception was thrown for %s %s" % (url,e))
-            self.assertTrue(req != None, "None Returned! %s" % url)
-            self.assertTrue(req.code == 200 or 
-                            req.code == 301 or
-                            req.code == 302,
-                            "Code: %s for %s" % (req.code, url))
-            if (req.code == 200):
-                self.assertTrue(req.body.find("DOCTYPE")>=0 or 
-                                req.body.find("<body")>=0 , 
-                                "%s Data: [%s] " % (url,req.body))
-    
-    def testPOST(self):
-        '''Test HTTP POST with an echo server'''
+                "http://www.cs.ualberta.ca/",
+                "http://softwareprocess.es/static/SoftwareProcess.es.html",
+                "http://c2.com/cgi/wiki?CommonLispHyperSpec",
+                "http://slashdot.org"
+                ]
+                for url in urls:
+                    try:
+                        req = http.GET( url )
+                            except Exception as e:
+                                print("An Exception was thrown for %s" % url)
+                                    self.assertTrue( False, "An Exception was thrown for %s %s" % (url,e))
+                                        self.assertTrue(req != None, "None Returned! %s" % url)
+                                            self.assertTrue(req.code == 200 or
+                                                            req.code == 301 or
+                                                            req.code == 302,
+                                                            "Code: %s for %s" % (req.code, url))
+                                                if (req.code == 200):
+                                                    self.assertTrue(req.body.find("DOCTYPE")>=0 or
+                                                                    req.body.find("<body")>=0 ,
+                                                                    "%s Data: [%s] " % (url,req.body))
+
+def testPOST(self):
+    '''Test HTTP POST with an echo server'''
         MyHTTPHandler.post = echo_post
         http = httpclass.HTTPClient()
         path = "post_echoer"
         url = "http://%s:%d/%s" % (BASEHOST,BASEPORT, path)
         args = {'a':'aaaaaaaaaaaaa',
-                'b':'bbbbbbbbbbbbbbbbbbbbbb',
+            'b':'bbbbbbbbbbbbbbbbbbbbbb',
                 'c':'c',
                 'd':'012345\r67890\n2321321\n\r'}
         print("Sending POST!")
@@ -253,11 +253,11 @@ class TestHTTPClient(unittest.TestCase):
         print(outargs.__class__)
         for key in args:
             self.assertTrue(args[key] == outargs[key][0], "Key [%s] not found" % key)
-        for key in outargs:
-            self.assertTrue(args[key] == outargs[key][0], "Key [%s] not found" % key)
+    for key in outargs:
+        self.assertTrue(args[key] == outargs[key][0], "Key [%s] not found" % key)
 
-    @classmethod
-    def tearDownClass(self):        
+@classmethod
+    def tearDownClass(self):
         if (TestHTTPClient.httpd!=None):
             print("HTTP Shutdown in tearDown\n")
             TestHTTPClient.httpd.shutdown()
