@@ -133,6 +133,7 @@ class HTTPClient(object):
         s.close()
         body=aa[1]
         #print(body)
+        sys.stdout.write(body)
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
@@ -185,6 +186,7 @@ class HTTPClient(object):
 
         s.close()
         body=aa[1]
+        sys.stdout.write(body)
 
         return HTTPResponse(code, body)
 
